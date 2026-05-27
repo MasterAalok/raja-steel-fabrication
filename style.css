@@ -1073,3 +1073,35 @@ h4 {
   }
 
 }
+
+/* ===== Mobile Logo Fix ===== */
+
+@media (max-width: 768px) {
+
+  .nav-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 1;
+  }
+
+  .logo-mark {
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .accent {
+    display: inline;
+  }
+
+}
