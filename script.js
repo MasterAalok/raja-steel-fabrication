@@ -78,62 +78,73 @@
     if (e.key === 'ArrowRight') nav(1);
   });
 
-  // ---- Contact Form ----
+// ---- Contact Form ----
 
 const form = document.getElementById('contactForm');
 const note = document.getElementById('formNote');
 
-form.addEventListener('submit', async (e) => {
+if (form) {
 
-  e.preventDefault();
+  form.addEventListener('submit', async (e) => {
 
-  const formData = {
-    name: form.name.value,
-    phone: form.phone.value,
-    service: form.service.value,
-    message: form.message.value
-  };
+    e.preventDefault();
 
-  note.textContent = "Sending...";
+    const formData = {
 
-  try {
+      name: form.name.value,
+      phone: form.phone.value,
+      service: form.service.value,
+      message: form.message.value
 
-    const response = await fetch('/api/contact', {
+    };
 
-      method: 'POST',
+    note.textContent = "Sending...";
+    note.style.color = "orange";
 
-      headers: {
-        'Content-Type': 'application/json'
-      },
+    try {
 
-      body: JSON.stringify(formData)
+      const response = await fetch('/api/contact', {
 
-    });
+        method: 'POST',
 
-    const data = await response.json();
+        headers: {
+          'Content-Type': 'application/json'
+        },
 
-    if (data.success) {
+        body: JSON.stringify(formData)
 
-      note.textContent = "Message sent successfully!";
-      note.style.color = "lime";
+      });
 
-      form.reset();
+      const data = await response.json();
 
-    } else {
+      console.log(data);
 
-      note.textContent = "Failed to send message.";
+      if (response.ok && data.success) {
+
+        note.textContent = "Message sent successfully!";
+        note.style.color = "lime";
+
+        form.reset();
+
+      } else {
+
+        note.textContent = data.message || "Failed to send message.";
+        note.style.color = "red";
+
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      note.textContent = "Something went wrong.";
       note.style.color = "red";
 
     }
 
-  } catch (error) {
+  });
 
-    note.textContent = "Something went wrong.";
-    note.style.color = "red";
-
-  }
-
-});
+}
 
   // ---- Year ----
   document.getElementById('year').textContent = new Date().getFullYear();
