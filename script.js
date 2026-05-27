@@ -78,21 +78,62 @@
     if (e.key === 'ArrowRight') nav(1);
   });
 
-  // ---- Contact form (front-end demo) ----
-  const form = document.getElementById('contactForm');
-  const note = document.getElementById('formNote');
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(form));
-    if (!data.name || !data.phone || !data.service) {
-      note.textContent = 'Please fill in name, phone and service.';
-      note.style.color = '#ff6b6b';
-      return;
+  // ---- Contact Form ----
+
+const form = document.getElementById('contactForm');
+const note = document.getElementById('formNote');
+
+form.addEventListener('submit', async (e) => {
+
+  e.preventDefault();
+
+  const formData = {
+    name: form.name.value,
+    phone: form.phone.value,
+    service: form.service.value,
+    message: form.message.value
+  };
+
+  note.textContent = "Sending...";
+
+  try {
+
+    const response = await fetch('/api/contact', {
+
+      method: 'POST',
+
+      headers: {
+        'Content-Type': 'application/json'
+      },
+
+      body: JSON.stringify(formData)
+
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+
+      note.textContent = "Message sent successfully!";
+      note.style.color = "lime";
+
+      form.reset();
+
+    } else {
+
+      note.textContent = "Failed to send message.";
+      note.style.color = "red";
+
     }
-    note.textContent = `Thanks ${data.name}! We'll call you shortly.`;
-    note.style.color = 'var(--accent)';
-    form.reset();
-  });
+
+  } catch (error) {
+
+    note.textContent = "Something went wrong.";
+    note.style.color = "red";
+
+  }
+
+});
 
   // ---- Year ----
   document.getElementById('year').textContent = new Date().getFullYear();
