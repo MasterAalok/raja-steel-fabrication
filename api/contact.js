@@ -1,28 +1,17 @@
 export default async function handler(req, res) {
 
   if (req.method !== 'POST') {
+
     return res.status(405).json({
       success: false,
       message: 'Method Not Allowed'
     });
+
   }
 
   try {
 
     const { name, phone, service, message } = req.body;
-
-    const payload = {
-
-      access_key: process.env.WEB3FORM_KEY,
-
-      subject: "New Fabrication Inquiry",
-
-      name,
-      phone,
-      service,
-      message
-
-    };
 
     const response = await fetch('https://api.web3forms.com/submit', {
 
@@ -33,28 +22,30 @@ export default async function handler(req, res) {
         Accept: 'application/json'
       },
 
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+
+        access_key: process.env.WEB3FORM_KEY,
+
+        subject: 'New Raja Steel Inquiry',
+
+        from_name: 'Raja Steel Website',
+
+        name,
+        phone,
+        service,
+        message
+
+      })
 
     });
 
-    const result = await response.json();
+    const text = await response.text();
 
-    console.log(result);
+    console.log(text);
 
-    if (result.success) {
+    const data = JSON.parse(text);
 
-      return res.status(200).json({
-        success: true
-      });
-
-    } else {
-
-      return res.status(400).json({
-        success: false,
-        message: result.message
-      });
-
-    }
+    return res.status(200).json(data);
 
   } catch (error) {
 
@@ -63,7 +54,7 @@ export default async function handler(req, res) {
     return res.status(500).json({
 
       success: false,
-      message: 'Server Error'
+      message: error.message
 
     });
 
